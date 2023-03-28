@@ -2,6 +2,7 @@ import sqlite3
 from flask import Flask, session, render_template, request, g
 from datetime import datetime
 
+
 from cart import Cart
 
 cart = Cart()
@@ -11,9 +12,8 @@ cart = Cart()
 app = Flask(__name__)
 
 
-
 @app.route("/")
-def testing():
+def home():
     return render_template("home.html")
 
 @app.route('/add_item', methods=['GET', 'POST'], endpoint='add_item')
