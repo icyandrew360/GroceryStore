@@ -1,0 +1,12 @@
+For the database, we need:
+
+ITEMS table:
+Contains name, stock (INT)
+
+USERS table:
+Contains email, firstname, lastname, password, address
+
+ADMINS table:
+are users. references users from the USERS table. 
+Will contain the same tuple variables as USERS table.
+

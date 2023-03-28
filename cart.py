@@ -2,15 +2,6 @@ class Cart:
     def __init__(self) -> None:
         self.shoppingCart = {}
 
-    # def addApple(self):
-    #     self.Apples+=1
-
-    # def addBanana(self):
-    #     self.Bananas+=1
-    
-    # def addChair(self):
-    #     self.Chairs+=1
-
     def addItem(self, item):
         if item not in self.shoppingCart:
             self.shoppingCart[item]=0
@@ -33,3 +24,4 @@ class Cart:
             if value > 0:
                 return_html += f"{keys}: {value} <br> "
         return(return_html)
+

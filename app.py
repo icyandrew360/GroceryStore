@@ -57,10 +57,10 @@ def confirm_purchase():
     if request.method == 'POST':
         buttonRequest = request.form['submitType']
         if buttonRequest == "Submit":
-            #add functionality here.
+            #add functionality here. communicate with database.
             return render_template("checkout.html")
-        else:
-            return render_template("cart.html")
+        else: #if cancel pressed.
+            return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
 
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
