@@ -9,4 +9,5 @@ Contains email, firstname, lastname, password, address
 ADMINS table:
 are users. references users from the USERS table. 
 Will contain the same tuple variables as USERS table.
-
+admins will be able to add stock to the database straight
+from the web app.
