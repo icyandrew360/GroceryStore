@@ -16,4 +16,20 @@ CREATE TABLE Users (
 )
 """)
 
+cursor.execute("DROP TABLE IF EXISTS Items")
+cursor.execute("""
+CREATE TABLE Items(
+    name TEXT PRIMARY KEY,
+    stock INT
+) 
+""")
+
+cursor.execute("DROP TABLE IF EXISTS Admins")
+cursor.execute("""
+CREATE TABLE Admins (
+    peemail TEXT,
+    email TEXT PRIMARY KEY,
+    FOREIGN KEY (email) REFERENCES Users(email) ON DELETE CASCADE
+)
+""")
 print("completed db setup.")
