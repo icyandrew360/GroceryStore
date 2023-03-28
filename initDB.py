@@ -21,15 +21,32 @@ cursor.execute("""
 CREATE TABLE Items(
     name TEXT PRIMARY KEY,
     stock INT
+    price FLOAT
 ) 
 """)
 
 cursor.execute("DROP TABLE IF EXISTS Admins")
 cursor.execute("""
 CREATE TABLE Admins (
-    peemail TEXT,
     email TEXT PRIMARY KEY,
     FOREIGN KEY (email) REFERENCES Users(email) ON DELETE CASCADE
 )
 """)
+
+
+cursor.execute("DROP TABLE IF EXISTS Receipts")
+
+cursor.execute("""CREATE TABLE Receipts (
+    email TEXT,
+    cost FLOAT,
+    date TEXT,
+    FOREIGN KEY (email) REFERENCES Users(email) ON DELETE CASCADE
+)""")
+# cursor.execute("""CREATE TABLE Receipts (
+#     email TEXT,
+#     cost FLOAT,
+#     date TEXT
+#     FOREIGN KEY (email) REFERENCES Users(email) ON DELETE CASCADE
+# )
+# """)
 print("completed db setup.")

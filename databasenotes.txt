@@ -1,7 +1,7 @@
 For the database, we need:
 
 ITEMS table:
-Contains name, stock (INT)
+Contains name, stock (INT), price (FLOAT)
 
 USERS table:
 Contains email, firstname, lastname, password, address
