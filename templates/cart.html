@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Cart</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+    </head>
+    <body>
+        <div class="navBar">
+            <h1>GroceryStore</h1>
+            <p>Logout</p>
+        </div>
+        <div class="Cart">
+            {{SHOPPINGCART_ITEMS}}
+
+            <!-- <form action="/stats" method="POST">
+                <input class="button" type="submit" value="Stats">
+            </form> -->
+
+            <!-- <form action="/add_member" method="POST">
+                <input class="formInput" type = "text" name = "player_id" placeholder = "Player ID" required>
+                <input class="buttonsmall" type="submit" value="Add">
+            </form> -->
+                <form action="/confirm" method="POST">
+                    <button type="submit" name="confirm" value="confirm">
+                        confirm purchase
+                    </button>
+                </form>
+            
+                
+                <form action="/back" method="POST">
+                    <button type="submit" name="back" value="back">
+                        back
+                    </button>
+                </form>
+                <!-- <p>hello testing <br> does this work? </p> -->
+            <div>
+
+        </div>
+    </body>
+</html> 
+
+<!-- <div class="container">
+    <div class="greeting">
+        {{name}}
+    </h1>
+    <div class="buttonOptions">
+        <form action="/stats" method="POST">
+            <input class="button" type="submit" value="Stats">
+        </form>
+        <form action="/teams" method="POST">
+            <input class="button" type="submit" value="Teams">
+        </form>
+        <form action="/rent" method="POST">
+            <input class="button" type="submit" value="Rent">
+        </form>
+        <form action="/booking" method="POST">
+            <input class="button" type="submit" value="Booking">
+        </form>
+    </div>
+    <div class="upcomingTitle">
+        Upcoming Events
+    </div>
+    <ul class="card-wrapper">
+        <li class="upcomingCard">
+            <div class="imgContainer">
+                <img  id="upcomingImg" src="../static/img/tabletennis.jpg">
+            </div>
+            <div class="upcomingInfo">
+                <p>Drop-In</p>
+                <p>Monday-Friday 12:00-14:00</p>
+            </div>
+        </li>
+        <li class="upcomingCard">
+            <div class="imgContainer">
+                <img  id="upcomingImg" src="../static/img/paddle.png">
+            </div>                    
+            <div class="upcomingInfo">
+                <p>Balls of Fury</p>
+                <p>February 25th Engg Lounge</p>
+            </div>
+        </li>
+    </ul>
+    {% if type == "ADMIN" %}
+    <div class="buttonOptions">
+        <form action="/adminDashboard" method="POST">
+            <input class="button" type="submit" value="Admin Powers">
+        </form>
+    </div>
+    {% endif %}
+</div> -->

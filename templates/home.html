@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>GroceryStore</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+    </head>
+    <body>
+        <div class="navBar">
+            <h1>GroceryStore</h1>
+            <p>Logout</p>
+        </div>
+        <div class="GroceryItems">
+            <form action="/add_item" method="POST">
+                <button type="submit" name="itemtype" value="Apple">
+                    <img src="{{ url_for('static',filename='img/apples.png') }}" alt="applePicture" width="50px"/>
+                </button>
+                <button type="submit" name="itemtype" value="RemoveApple">
+                    remove
+                </button>
+            </form>
+
+            <form action="/add_item" method="POST">
+                <button type="submit" name="itemtype" value="Banana">
+                    <img src="{{ url_for('static',filename='img/banana.png') }}" alt="bananaPicture" width="50px"/>
+                </button>
+                <button type="submit" name="itemtype" value="RemoveBanana">
+                    remove
+                </button>
+            </form>
+            
+            <form action="/add_item" method="POST">
+                <button type="submit" name="itemtype" value="Chair">
+                    <img src="{{ url_for('static',filename='img/chair.png') }}" alt="chairPicture" width="50px"/>
+                </button>
+                <button type="submit" name="itemtype" value="RemoveChair">
+                    remove
+                </button>
+            </form>
+            
+            </div>
+                <form action="/check_cart" method="POST">
+                    <button type="submit" name="cart" value="check">
+                        retrieve cart
+                    </button>
+                </form>
+                <!-- <p>hello testing <br> does this work? </p> -->
+                <p>{{SHOPPINGCART_ITEMS}}</p>
+            <div>
+
+        </div>
+    </body>
+</html> 
+
+<!-- <div class="container">
+    <div class="greeting">
+        {{name}}
+    </h1>
+    <div class="buttonOptions">
+        <form action="/stats" method="POST">
+            <input class="button" type="submit" value="Stats">
+        </form>
+        <form action="/teams" method="POST">
+            <input class="button" type="submit" value="Teams">
+        </form>
+        <form action="/rent" method="POST">
+            <input class="button" type="submit" value="Rent">
+        </form>
+        <form action="/booking" method="POST">
+            <input class="button" type="submit" value="Booking">
+        </form>
+    </div>
+    <div class="upcomingTitle">
+        Upcoming Events
+    </div>
+    <ul class="card-wrapper">
+        <li class="upcomingCard">
+            <div class="imgContainer">
+                <img  id="upcomingImg" src="../static/img/tabletennis.jpg">
+            </div>
+            <div class="upcomingInfo">
+                <p>Drop-In</p>
+                <p>Monday-Friday 12:00-14:00</p>
+            </div>
+        </li>
+        <li class="upcomingCard">
+            <div class="imgContainer">
+                <img  id="upcomingImg" src="../static/img/paddle.png">
+            </div>                    
+            <div class="upcomingInfo">
+                <p>Balls of Fury</p>
+                <p>February 25th Engg Lounge</p>
+            </div>
+        </li>
+    </ul>
+    {% if type == "ADMIN" %}
+    <div class="buttonOptions">
+        <form action="/adminDashboard" method="POST">
+            <input class="button" type="submit" value="Admin Powers">
+        </form>
+    </div>
+    {% endif %}
+</div> -->
