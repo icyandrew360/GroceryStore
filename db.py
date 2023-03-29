@@ -79,7 +79,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS employees(
             last_name TEXT NOT NULL,
             employer TEXT NOT NULL,
             PRIMARY KEY (employee_id)
-            FOREIGN KEY (employer) REFERENCES supplier(name)
+            FOREIGN KEY (employer) REFERENCES supplier(supplier_name)
         )""")
 
 #Create supplier table
@@ -170,13 +170,14 @@ def add_user(username, first_name, last_name):
             connection.close()
 
 def add_registereduser(username, password, first_name, last_name, address):
-    try:
-        add_user(username)
+    connection = None
+    try:    
+        add_user(username, first_name, last_name)
         connection = sqlite3.connect('grocery.sqlite3')
         cursor = connection.cursor()
 
         insert_query = """INSERT INTO registeredusers 
-                        (username, password, name, address) VALUES (?, ?, ?, ?, ?)"""
+                        (username, password, first_name, last_name, address) VALUES (?, ?, ?, ?, ?)"""
         data = (username, password, first_name, last_name, address)
         cursor.execute(insert_query, data)
         connection.commit()
@@ -203,8 +204,8 @@ def remove_user(username):
             connection.close()
 
 def remove_registereduser(username):
+    remove_user(username)
     try:
-        remove_user(username)
         connection = sqlite3.connect('grocery.sqlite3')
         cursor = connection.cursor()
         delete_query = """DELETE FROM registeredusers WHERE username = ?"""
@@ -243,6 +244,7 @@ def get_item(item_id):
             
 #fetch user from users table
 def get_user(username):
+    connection = None
     try:
         connection = sqlite3.connect('grocery.sqlite3')
         cursor = connection.cursor()
@@ -254,8 +256,9 @@ def get_user(username):
         for row in record:
             username = row[0]
             password = row[1]
-            name = row[2]
-            address = row[3]
+            first_name = row[2]
+            last_name = row[3]
+            address = row[4]
         cursor.close()
   
     except sqlite3.Error as error:
@@ -265,10 +268,10 @@ def get_user(username):
             connection.close()
 
 def login_user(username, password):
-    db = connect()
-    cursor = db.cursor()
+    connection = sqlite3.connect('grocery.sqlite3')
+    cursor = connection.cursor()
     data = (username, password)
-    cursor.execute((f"SELECT * FROM USER WHERE username=? AND password=?"), data)
+    cursor.execute((f"SELECT * FROM registeredusers WHERE username=? AND password=?"), data)
     
     user = cursor.fetchall()
     if len(user) == 1:
@@ -380,6 +383,10 @@ def add_supplier(supplier_name, product):
 #add_product("banana", 15)
 #remove_product("banana")
 #add_registereduser("j", "pass1", "john", "123 john st")
-#add_user("john", "pass2", "john", "123 john st")
+
+#remove_registereduser("john")
+#add_registereduser("johnny", "pass2", "john", "doe", "123 john st")
+
+print(login_user("johnny", "pass2"))
 
 #add_farm("Jimbob", "Calgary")
