@@ -1,6 +1,6 @@
 import sqlite3
 
-connect = sqlite3.connect('grocery.sqlite3')
+connect = sqlite3.connect('lib/grocery.sqlite3')
 cursor = connect.cursor()
 
 #Create groceries table
@@ -137,7 +137,7 @@ def writeToFile(image, fileName):
 def add_item(item_id, item_name, item_img, category, stock, price):
     try:
         add_product(item_name, stock)
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """ INSERT INTO groceries
                         (item_id, item_name, item_img, category, stock, price) VALUES (?,?,?,?,?,?)"""
@@ -156,7 +156,7 @@ def add_item(item_id, item_name, item_img, category, stock, price):
 
 def add_user(username, first_name, last_name):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO users VALUES (?, ?, ?)"""
         data = (username,first_name,last_name)
@@ -172,25 +172,27 @@ def add_user(username, first_name, last_name):
 def add_registereduser(username, password, first_name, last_name, address):
     connection = None
     try:    
-        add_user(username, first_name, last_name)
-        connection = sqlite3.connect('grocery.sqlite3')
+        #add_user(username, first_name, last_name)
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
 
         insert_query = """INSERT INTO registeredusers 
                         (username, password, first_name, last_name, address) VALUES (?, ?, ?, ?, ?)"""
         data = (username, password, first_name, last_name, address)
         cursor.execute(insert_query, data)
+        print('Executed query.')
         connection.commit()
         cursor.close()
     except sqlite3.Error as error:
-        print(error)
+        return False
     finally:
         if connection:
             connection.close()
+            return True
 
 def remove_user(username):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         delete_query = """DELETE FROM users WHERE username = ?"""
         data = (username,)
@@ -206,7 +208,7 @@ def remove_user(username):
 def remove_registereduser(username):
     remove_user(username)
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         delete_query = """DELETE FROM registeredusers WHERE username = ?"""
         data = (username,)
@@ -222,7 +224,7 @@ def remove_registereduser(username):
 #fetch item from grocery table
 def get_item(item_id):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
                 
         fetch_query = """SELECT * from groceries where item_id = ?"""
@@ -246,7 +248,7 @@ def get_item(item_id):
 def get_user(username):
     connection = None
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
                 
         fetch_query = """SELECT * from registeredusers where username = ?"""
@@ -268,7 +270,7 @@ def get_user(username):
             connection.close()
 
 def login_user(username, password):
-    connection = sqlite3.connect('grocery.sqlite3')
+    connection = sqlite3.connect('lib/grocery.sqlite3')
     cursor = connection.cursor()
     data = (username, password)
     cursor.execute((f"SELECT * FROM registeredusers WHERE username=? AND password=?"), data)
@@ -283,7 +285,7 @@ def login_user(username, password):
     
 def add_farm(farm_name, location):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO farm 
                         (farm_name, location) VALUES (?, ?)"""
@@ -299,7 +301,7 @@ def add_farm(farm_name, location):
 
 def add_product(product_name, stock):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO product 
                         (product_name, stock) VALUES (?, ?)"""
@@ -315,7 +317,7 @@ def add_product(product_name, stock):
 
 def remove_product(product_name):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         delete_query = """DELETE FROM product WHERE product_name = ?"""
         data = (product_name,)
@@ -330,7 +332,7 @@ def remove_product(product_name):
 
 def add_sellsto(farm_name, supplier):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO sellsto 
                         (farm_name, supplier) VALUES (?, ?)"""
@@ -346,7 +348,7 @@ def add_sellsto(farm_name, supplier):
 
 def add_employee(employee_id, first_name, last_name, employer):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO employees 
                         (employee_id, first_name, last_name, employer) VALUES (?, ?, ?, ?)"""
@@ -362,7 +364,7 @@ def add_employee(employee_id, first_name, last_name, employer):
 
 def add_supplier(supplier_name, product):
     try:
-        connection = sqlite3.connect('grocery.sqlite3')
+        connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO suppliers 
                         (supplier_name, product) VALUES (?, ?)"""

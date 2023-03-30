@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>GroceryStore</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+    </head>
+    <body>
+        <div class="formBox">
+            <div class="title">
+                GroceryStore
+            </div>
+            <div class="wrapper">
+               <!-- <div class="toggle">
+                  <input type="radio" name="slide" id="login" checked>
+                  <input type="radio" name="slide" id="register">
+                  <label for="login" class="slide login">Login</label>
+                  <label for="register" class="slide register">Register</label>
+                  <div class="slider-tab"></div>
+               </div> -->
+               <div class="form-inner">
+                  <form action="/login" class="login" method="POST">
+                     <div class="field">
+                        <input type="text" name="Username" placeholder="Username" required>
+                     </div>
+                     <div class="field">
+                        <input type="password" name="Password" placeholder="Password" required>
+                     </div>
+                     <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Login">
+                     </div>
+                     <div class="msg" id="msg1">
+                        {{LOGIN_ERROR_MSG}}
+                    </div>
+                  </form>
+                  <form action="/register" class="register" method="POST">
+                     <div class="field">
+                        <input type="text" name="Username" placeholder="Username" required>
+                     </div>
+                     <div class="field">
+                        <input type="password" name="Password" placeholder="Password" required>
+                     </div>
+                     <div class="field">
+                        <input type="text" name="Fname" placeholder="First name" required>
+                     </div>
+                     <div class="field">
+                        <input type="text" name="Lname" placeholder="Last name" required>
+                     </div>
+                     <div class="field">
+                        <input type="text" name="Address" placeholder="Address" required>
+                     </div>
+                     <div class="field btn">
+                        <div class="btn-layer"></div>
+                        <input type="submit" value="Register">
+                     </div>
+                     <div class="msg" id="msg2">
+                        {{REGISTER_MSG}}
+                    </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+    </body>
+</html> 

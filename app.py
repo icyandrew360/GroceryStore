@@ -1,20 +1,55 @@
 import sqlite3
+import re
 from flask import Flask, session, render_template, request, g
 from datetime import datetime
 
-
 from cart import Cart
+from db import login_user
+from db import add_registereduser
 
 cart = Cart()
-
-#from SQLDriver import *
+userLoggedIn = [] #upon succesful login, userdata is temporarily saved in this list.
+#upon logout, this list is cleared.
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("login.html")
+
+@app.route("/login", methods=['GET', 'POST'], endpoint='login')
+def login():
+    username = request.form['Username']
+    password = request.form['Password']
+    print(username, password)
+    userlogin = login_user(username, password)
+    if userlogin[0] == True:
+        #save the userdata into userlogin list.
+        userLoggedIn = userlogin[1]
+        return render_template("home.html")
+    else:
+        return render_template("login.html", LOGIN_ERROR_MSG = "There was an error logging in.")
+
+
+@app.route("/register", methods=['GET', 'POST'], endpoint='register')
+def register():
+    username = request.form['Username']
+    password = request.form['Password']
+    fname = request.form["Fname"]
+    lname = request.form["Lname"]
+    address = request.form["Address"]
+
+    status = add_registereduser(username, password, fname, lname, address)
+
+    if status == True:
+        return render_template("login.html", REGISTER_MSG = 'Succesful account creation. Please log in with account details.')
+
+    else:
+        return render_template("login.html", REGISTER_MSG = 'Error creating account.')
+   # if re.fullmatch(regex, email):
+       
+    
 
 @app.route('/add_item', methods=['GET', 'POST'], endpoint='add_item')
 def add_item():
