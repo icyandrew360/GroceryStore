@@ -1,3 +1,4 @@
+from db import getItemPrice
 class Cart:
     def __init__(self) -> None:
         self.shoppingCart = {}
@@ -20,8 +21,14 @@ class Cart:
 #takes in cart from retrieve cart, then adds html to make the cart look nice
     def decorateCart(cart):
         return_html = ""
+        finalTotalPrice = 0
         for keys, value in cart.items():
             if value > 0:
-                return_html += f"{keys}: {value} <br> "
-        return(return_html)
+                itemPrice = getItemPrice(keys)
+                totalPrice = round(itemPrice * value, 2)
+                return_html += f"{keys}: {value} = ${totalPrice}\n"
+                finalTotalPrice += totalPrice
+            
+        return_html += str(round(finalTotalPrice, 2))
+        return(return_html.split('\n'))
 

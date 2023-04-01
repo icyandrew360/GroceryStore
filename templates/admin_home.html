@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Cart</title>
+        <title>GroceryStore</title>
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
     </head>
     <body>
@@ -9,33 +9,45 @@
             <h1>GroceryStore</h1>
             <p>Logout</p>
         </div>
-        <div class="Cart">
-            {% for line in SHOPPINGCART_ITEMS %}
-                <p>{{line}}</p>
-            {% endfor %}
+        <div class="adminMessage">
+            <p>Logged in as admin.</p>
+        <div>
+        <div class="GroceryItems">
+            <form action="/add_item" method="POST">
+                <button type="submit" name="itemtype" value="Apple">
+                    <img src="{{ url_for('static',filename='img/apples.png') }}" alt="applePicture" width="50px"/>
+                </button>
+                <button type="submit" name="itemtype" value="RemoveApple">
+                    remove
+                </button>
+            </form>
 
-            <p>{{TOTAL_PRICE}}</p>
-            <!-- <form action="/stats" method="POST">
-                <input class="button" type="submit" value="Stats">
-            </form> -->
-
-            <!-- <form action="/add_member" method="POST">
-                <input class="formInput" type = "text" name = "player_id" placeholder = "Player ID" required>
-                <input class="buttonsmall" type="submit" value="Add">
-            </form> -->
-                <form action="/confirm" method="POST">
-                    <button type="submit" name="confirm" value="confirm">
-                        confirm purchase
-                    </button>
-                </form>
+            <form action="/add_item" method="POST">
+                <button type="submit" name="itemtype" value="Banana">
+                    <img src="{{ url_for('static',filename='img/banana.png') }}" alt="bananaPicture" width="50px"/>
+                </button>
+                <button type="submit" name="itemtype" value="RemoveBanana">
+                    remove
+                </button>
+            </form>
             
-                
-                <form action="/back" method="POST">
-                    <button type="submit" name="back" value="back">
-                        back
+            <form action="/add_item" method="POST">
+                <button type="submit" name="itemtype" value="Chair">
+                    <img src="{{ url_for('static',filename='img/chair.png') }}" alt="chairPicture" width="50px"/>
+                </button>
+                <button type="submit" name="itemtype" value="RemoveChair">
+                    remove
+                </button>
+            </form>
+            
+            </div>
+                <form action="/check_cart" method="POST">
+                    <button type="submit" name="cart" value="check">
+                        retrieve cart
                     </button>
                 </form>
                 <!-- <p>hello testing <br> does this work? </p> -->
+                <p>{{SHOPPINGCART_ITEMS}}</p>
             <div>
 
         </div>

@@ -16,12 +16,12 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS groceries (
         )""")
 
 #Create user table
-cursor.execute("""CREATE TABLE IF NOT EXISTS users(
-            username TEXT NOT NULL UNIQUE,
-            first_name TEXT,
-            last_name TEXT,
-            PRIMARY KEY (username)
-        )""")
+# cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+#             username TEXT NOT NULL UNIQUE,
+#             first_name TEXT,
+#             last_name TEXT,
+#             PRIMARY KEY (username)
+#         )""")
 
 #Create registered registered user table
 cursor.execute("""CREATE TABLE IF NOT EXISTS registeredusers(
@@ -30,19 +30,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS registeredusers(
             first_name TEXT,
             last_name TEXT,
             address TEXT NOT NULL,
-            FOREIGN KEY (username) REFERENCES users(username)
+            PRIMARY KEY (username)
         )""")
 
 #Create admin user table
 cursor.execute("""CREATE TABLE IF NOT EXISTS admin(
-            admin_id INTEGER NOT NULL,
-            username TEXT NOT NULL,
-            password TEXT NOT NULL,
-            first_name TEXT,
-            last_name TEXT,
-            address TEXT NOT NULL,
-            PRIMARY KEY (admin_id),
-            FOREIGN KEY (username) REFERENCES users(username)
+            admin_user TEXT NOT NULL,
+            FOREIGN KEY (admin_user) REFERENCES users(username)
+            PRIMARY KEY (admin_user)
         )""")
 
 #Create order table
@@ -91,9 +86,11 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS suppliers(
         )""")
 
 #Create product table
-cursor.execute("""CREATE TABLE IF NOT EXISTS product(
+cursor.execute("""
+            CREATE TABLE IF NOT EXISTS product(
             product_name TEXT NOT NULL,
             stock int NOT NULL,
+            price FLOAT NOT NULL,
             PRIMARY KEY (product_name)
         )""")
 
@@ -154,20 +151,20 @@ def add_item(item_id, item_name, item_img, category, stock, price):
           
 #insert UNIQUE user into users table  
 
-def add_user(username, first_name, last_name):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO users VALUES (?, ?, ?)"""
-        data = (username,first_name,last_name)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different username
-    finally:
-        if connection:
-            connection.close()
+# def add_user(username, first_name, last_name):
+#     try:
+#         connection = sqlite3.connect('lib/grocery.sqlite3')
+#         cursor = connection.cursor()
+#         insert_query = """INSERT INTO users VALUES (?, ?, ?)"""
+#         data = (username,first_name,last_name)
+#         cursor.execute(insert_query, data)
+#         connection.commit()
+#         cursor.close()
+#     except sqlite3.Error as error:
+#         print(error) #prompt user to pick different username
+#     finally:
+#         if connection:
+#             connection.close()
 
 def add_registereduser(username, password, first_name, last_name, address):
     connection = None
@@ -194,22 +191,6 @@ def remove_user(username):
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
-        delete_query = """DELETE FROM users WHERE username = ?"""
-        data = (username,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different username
-    finally:
-        if connection:
-            connection.close()
-
-def remove_registereduser(username):
-    remove_user(username)
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
         delete_query = """DELETE FROM registeredusers WHERE username = ?"""
         data = (username,)
         cursor.execute(delete_query, data)
@@ -220,6 +201,22 @@ def remove_registereduser(username):
     finally:
         if connection:
             connection.close()
+
+# def remove_registereduser(username):
+#     remove_user(username)
+#     try:
+#         connection = sqlite3.connect('lib/grocery.sqlite3')
+#         cursor = connection.cursor()
+#         delete_query = """DELETE FROM registeredusers WHERE username = ?"""
+#         data = (username,)
+#         cursor.execute(delete_query, data)
+#         connection.commit()
+#         cursor.close()
+#     except sqlite3.Error as error:
+#         print(error) #prompt user to pick different username
+#     finally:
+#         if connection:
+#             connection.close()
 
 #fetch item from grocery table
 def get_item(item_id):
@@ -240,6 +237,29 @@ def get_item(item_id):
   
     except sqlite3.Error as error:
         print("whoopsies fetch")
+    finally:
+        if connection:
+            connection.close()
+
+def getItemPrice(item_name):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+                
+        fetch_query = """SELECT price FROM product where product_name = ?"""
+        cursor.execute(fetch_query, (item_name,))
+        record = cursor.fetchall()
+
+        if len(record) == 0:
+            print("ERROR: ITEM NOT FOUND IN DB")
+            return ()
+        price = record[0][0]
+        cursor.close()
+        return (float(price))
+        
+  
+    except sqlite3.Error as error:
+        print("error getting item price")
     finally:
         if connection:
             connection.close()
@@ -299,21 +319,45 @@ def add_farm(farm_name, location):
         if connection:
             connection.close()
 
-def add_product(product_name, stock):
+def add_product(product_name, stock, price):
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """INSERT INTO product 
-                        (product_name, stock) VALUES (?, ?)"""
-        data = (product_name, stock)
+                        (product_name, stock, price) VALUES (?, ?, ?)"""
+        data = (product_name, stock, price)
         cursor.execute(insert_query, data)
         connection.commit()
         cursor.close()
+        print(f"added product {product_name}, amount: {stock}, price: {price}")
     except sqlite3.Error as error:
         print("Product already exists") #prompt user to pick different farm name
     finally:
         if connection:
             connection.close()
+
+def increase_stock(product_name, amount):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        query = "SELECT stock FROM product WHERE product_name = ?"
+        cursor.execute(query, (product_name,))
+        data = cursor.fetchall()
+        currStock = data[0][0]
+        currStock = currStock + amount
+        if currStock < 0:
+            return 'error occured: cant reduce stock to negative D:'
+        query = """UPDATE product
+                    SET stock = ? 
+                    WHERE product_name = ?"""
+        values = (currStock, product_name)
+        cursor.execute(query, values)
+        connection.commit()
+        cursor.close()
+        print(f"updated {product_name} stock to {currStock}")
+    except sqlite3.Error as error:
+        print(error)
+
 
 def remove_product(product_name):
     try:
@@ -389,6 +433,5 @@ def add_supplier(supplier_name, product):
 #remove_registereduser("john")
 #add_registereduser("johnny", "pass2", "john", "doe", "123 john st")
 
-print(login_user("johnny", "pass2"))
-
 #add_farm("Jimbob", "Calgary")
+remove_user("asd")
