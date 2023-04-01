@@ -54,6 +54,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS receipt(
             order_id INTEGER NOT NULL,
             total REAL NOT NULL,
             date DATE NOT NULL,
+            shipping_address TEXT NOT NULL,
             PRIMARY KEY (order_id),
             FOREIGN KEY (order_id) REFERENCES orders(order_id)
         )""")
@@ -434,4 +435,3 @@ def add_supplier(supplier_name, product):
 #add_registereduser("johnny", "pass2", "john", "doe", "123 john st")
 
 #add_farm("Jimbob", "Calgary")
-remove_user("asd")

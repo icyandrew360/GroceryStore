@@ -110,7 +110,8 @@ def confirm_purchase():
     if request.method == 'POST':
         buttonRequest = request.form['submitType']
         if buttonRequest == "Submit":
-            #add functionality here. communicate with database.
+            shipping_address = request.form['address']
+            credit_card = request.form['creditCard']
             return render_template("checkout.html")
         else: #if cancel pressed.
             return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart)[0]
