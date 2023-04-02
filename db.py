@@ -1,4 +1,6 @@
 import sqlite3
+import random
+import datetime
 
 connect = sqlite3.connect('lib/grocery.sqlite3')
 cursor = connect.cursor()
@@ -422,6 +424,70 @@ def add_supplier(supplier_name, product):
     finally:
         if connection:
             connection.close()
+            
+def create_order_id():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()  
+        while(1):
+            random_number = random.randint(0, 2147483647)
+            fetch_query = """SELECT * from orders where order_id = ?"""
+            cursor.execute(fetch_query, (random_number,))
+            record = cursor.fetchall()
+            if(record == [] or record is None):
+                return random_number
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        if connection:
+            connection.close()
+    
+def checkout(username, address, total):
+    try:
+        order_id = create_order_id()
+        print(order_id)
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO orders 
+                        (order_id, username, shipping_address) VALUES (?, ?, ?)"""
+        data = (order_id, username, address)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        date = datetime.datetime.now()
+        insert_query = """INSERT INTO receipt 
+                        (order_id, total, date, shipping_address) VALUES (?, ?, ?, ?)"""
+        data = (order_id, total, date, address)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        if connection:
+            connection.close()
+    
+def remove_order(order_id):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        delete_query = """DELETE FROM orders WHERE order_id = ?"""
+        data = (order_id,)
+        cursor.execute(delete_query, data)
+        connection.commit()
+        delete_query = """DELETE FROM receipt WHERE order_id = ?"""
+        data = (order_id,)
+        cursor.execute(delete_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error) #prompt user to pick different username
+    finally:
+        if connection:
+            connection.close()
+    
+
+#remove_order(1380278447)
+#checkout("test", "123 test st", 12.39)
 #test inserts/fetches
 #add_item(1,"Bread", "images/bread.png", "Food", 12, 2.97)
 #get_item(1)
