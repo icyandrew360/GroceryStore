@@ -301,10 +301,10 @@ def login_user(username, password):
     user = cursor.fetchall()
     if len(user) == 1:
         cursor.close()
-        return True, user
+        return (True, user)
     else:
         cursor.close()
-        return False, None
+        return (False, None)
     
 def add_farm(farm_name, location):
     try:
