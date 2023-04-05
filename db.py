@@ -17,6 +17,14 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS groceries (
             FOREIGN KEY(item_name) REFERENCES product(product_name)
         )""")
 
+#Create user table
+# cursor.execute("""CREATE TABLE IF NOT EXISTS users(
+#             username TEXT NOT NULL UNIQUE,
+#             first_name TEXT,
+#             last_name TEXT,
+#             PRIMARY KEY (username)
+#         )""")
+
 #Create registered registered user table
 cursor.execute("""CREATE TABLE IF NOT EXISTS registeredusers(
             username TEXT NOT NULL,
@@ -55,11 +63,11 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS receipt(
 
 #Create cart table
 cursor.execute("""CREATE TABLE IF NOT EXISTS cart(
-            username TEXT NOT NULL,
+            contents BLOB NOT NULL,
+            user_id TEXT NOT NULL,
             cart_number INTEGER NOT NULL,
-            item INTEGER NOT NULL, 
-            FOREIGN KEY (username) REFERENCES users(username)
-            FOREIGN KEY (item) REFERENCES groceries(item_id)
+            FOREIGN KEY (user_id) REFERENCES users(username)
+            FOREIGN KEY (contents) REFERENCES groceries(item_id)
         )""")
 
 #Create employee table
@@ -127,8 +135,8 @@ def writeToFile(image, fileName):
 
 #Insert grocery item into groceries table
 def add_item(item_id, item_name, item_img, category, stock, price):
-    connection = None
     try:
+        add_product(item_name, stock)
         connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
         insert_query = """ INSERT INTO groceries
@@ -139,443 +147,32 @@ def add_item(item_id, item_name, item_img, category, stock, price):
         connection.commit()
         cursor.close()
     except sqlite3.Error as error:
-        print(error)
+        print("Item ID already exists")
     finally:
         if connection:
             connection.close()
-    return
+          
+#insert UNIQUE user into users table  
 
-#get item from grocery table
-def get_item(item_id):
-    connection = None
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from groceries where item_id = ?"""
-        cursor.execute(fetch_query, (item_id,))
-        record = cursor.fetchall()
-        cursor.close()
-  
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
+# def add_user(username, first_name, last_name):
+#     try:
+#         connection = sqlite3.connect('lib/grocery.sqlite3')
+#         cursor = connection.cursor()
+#         insert_query = """INSERT INTO users VALUES (?, ?, ?)"""
+#         data = (username,first_name,last_name)
+#         cursor.execute(insert_query, data)
+#         connection.commit()
+#         cursor.close()
+#     except sqlite3.Error as error:
+#         print(error) #prompt user to pick different username
+#     finally:
+#         if connection:
+#             connection.close()
 
-def remove_item(item_id):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM groceries WHERE item_id = ?"""
-        data = (item_id,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different username
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def getItemPrice(item_name):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT price FROM product where product_name = ?"""
-        cursor.execute(fetch_query, (item_name,))
-        record = cursor.fetchall()
-
-        if len(record) == 0:
-            print("ERROR: ITEM NOT FOUND IN DB")
-            return ()
-        price = record[0][0]
-        cursor.close()
-        return (float(price))
-    except sqlite3.Error as error:
-        print("error getting item price")
-    finally:
-        if connection:
-            connection.close()
-
-def create_order_id(): #helper function for creating new order
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()  
-        while(1):
-            random_number = random.randint(0, 2147483647)
-            fetch_query = """SELECT * from orders where order_id = ?"""
-            cursor.execute(fetch_query, (random_number,))
-            record = cursor.fetchall()
-            if(record == [] or record is None):
-                return random_number
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    
-def checkout(username, address, total): #create order and receipt
-    try:
-        order_id = create_order_id()
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO orders 
-                        (order_id, username, shipping_address) VALUES (?, ?, ?)"""
-        data = (order_id, username, address)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        date = datetime.datetime.now()
-        insert_query = """INSERT INTO receipt 
-                        (order_id, total, date, shipping_address) VALUES (?, ?, ?, ?)"""
-        data = (order_id, total, date, address)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    
-def remove_order(order_id): #delete order and receipt
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM orders WHERE order_id = ?"""
-        data = (order_id,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        delete_query = """DELETE FROM receipt WHERE order_id = ?"""
-        data = (order_id,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different username
-    finally:
-        if connection:
-            connection.close()
-    
-def get_orders(username):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from orders where username = ?"""
-        cursor.execute(fetch_query, (username,))
-        record = cursor.fetchall()
-        cursor.close()
-  
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-def add_employee(employee_id, first_name, last_name, employer): #add to employee table
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO employees 
-                        (employee_id, first_name, last_name, employer) VALUES (?, ?, ?, ?)"""
-        data = (employee_id, first_name, last_name, employer)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print("Sells-to relationship already exists") #prompt user to pick different farm name
-    finally:
-        if connection:
-            connection.close()
-            
-def remove_employee(employee_id):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM employees WHERE employee_id = ?"""
-        data = (employee_id,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def get_employee(employee_id):
-    connection = None
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from employees where employee_id = ?"""
-        cursor.execute(fetch_query, (employee_id,))
-        record = cursor.fetchall()
-        cursor.close()
-  
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-
-def add_supplier(supplier_name, product): #add to suppliers table
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO suppliers 
-                        (supplier_name, product) VALUES (?, ?)"""
-        data = (supplier_name, product)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-            
-def remove_supplier(supplier_name):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM suppliers WHERE supplier_name = ?"""
-        data = (supplier_name,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def get_supplier(supplier_name):
-    connection = None
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from suppliers where supplier_name = ?"""
-        cursor.execute(fetch_query, (supplier_name,))
-        record = cursor.fetchall()
-        cursor.close()
-  
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-def add_supplies(supplier, grocery_item):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO supplies 
-                        (supplier, grocery_item) VALUES (?, ?)"""
-        data = (supplier, grocery_item)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-
-def remove_supplies(supplier, grocery_item):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM supplies WHERE supplier = ? AND grocery_item = ?"""
-        data = (supplier, grocery_item)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-
-def add_farm(farm_name, location): #add to farm table
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO farm 
-                        (farm_name, location) VALUES (?, ?)"""
-        data = (farm_name, location)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different farm name
-    finally:
-        if connection:
-            connection.close()
-            
-def remove_farm(farm_name):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM farm WHERE farm_name = ?"""
-        data = (farm_name,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def get_farm(farm_name):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from farm where farm_name = ?"""
-        cursor.execute(fetch_query, (farm_name,))
-        record = cursor.fetchall()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-def add_sellsto(farm_name, supplier): #add to sellsto table
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO sellsto 
-                        (farm_name, supplier) VALUES (?, ?)"""
-        data = (farm_name, supplier)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print("Sells-to relationship already exists") #prompt user to pick different farm name
-    finally:
-        if connection:
-            connection.close()
-            
-def remove_sellsto(farm_name, supplier):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM sellsto WHERE farm_name = ? AND supplier = ?"""
-        data = (farm_name, supplier)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def add_product(product_name, stock, price): #add to product table
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO product 
-                        (product_name, stock, price) VALUES (?, ?, ?)"""
-        data = (product_name, stock, price)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-        print(f"added product {product_name}, amount: {stock}, price: {price}")
-    except sqlite3.Error as error:
-        print("Product already exists") #prompt user to pick different farm name
-    finally:
-        if connection:
-            connection.close()
-
-def remove_product(product_name): #remove from product table
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM product WHERE product_name = ?"""
-        data = (product_name,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-
-def get_product(product_name):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from product where product_name = ?"""
-        cursor.execute(fetch_query, (product_name,))
-        record = cursor.fetchall()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-def add_admin(admin_user):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO admin 
-                        (admin_user) VALUES (?)"""
-        data = (admin_user,)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def remove_admin(admin_user):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM admin WHERE admin_user = ?"""
-        data = (admin_user,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different username
-    finally:
-        if connection:
-            connection.close()
-    return
-
-
-def add_registereduser(username, password, first_name, last_name, address): #add registered user
+def add_registereduser(username, password, first_name, last_name, address):
     connection = None
     try:    
+        #add_user(username, first_name, last_name)
         connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
 
@@ -593,7 +190,7 @@ def add_registereduser(username, password, first_name, last_name, address): #add
             connection.close()
             return True
 
-def remove_user(username): #remove registered user
+def remove_user(username):
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3')
         cursor = connection.cursor()
@@ -608,7 +205,70 @@ def remove_user(username): #remove registered user
         if connection:
             connection.close()
 
-def get_user(username): #get registereduser
+# def remove_registereduser(username):
+#     remove_user(username)
+#     try:
+#         connection = sqlite3.connect('lib/grocery.sqlite3')
+#         cursor = connection.cursor()
+#         delete_query = """DELETE FROM registeredusers WHERE username = ?"""
+#         data = (username,)
+#         cursor.execute(delete_query, data)
+#         connection.commit()
+#         cursor.close()
+#     except sqlite3.Error as error:
+#         print(error) #prompt user to pick different username
+#     finally:
+#         if connection:
+#             connection.close()
+
+#fetch item from grocery table
+def get_item(item_id):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+                
+        fetch_query = """SELECT * from groceries where item_id = ?"""
+        cursor.execute(fetch_query, (item_id,))
+        record = cursor.fetchall()
+
+        for row in record:
+            name = row[1]
+            image = row[2]
+            imagePath = name + "1" + ".png"
+            writeToFile(image, imagePath) #replace with store on website?
+        cursor.close()
+  
+    except sqlite3.Error as error:
+        print("whoopsies fetch")
+    finally:
+        if connection:
+            connection.close()
+
+def getItemPrice(item_name):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+                
+        fetch_query = """SELECT price FROM product where product_name = ?"""
+        cursor.execute(fetch_query, (item_name,))
+        record = cursor.fetchall()
+
+        if len(record) == 0:
+            print("ERROR: ITEM NOT FOUND IN DB")
+            return ()
+        price = record[0][0]
+        cursor.close()
+        return (float(price))
+        
+  
+    except sqlite3.Error as error:
+        print("error getting item price")
+    finally:
+        if connection:
+            connection.close()
+            
+#fetch user from users table
+def get_user(username):
     connection = None
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3')
@@ -617,85 +277,22 @@ def get_user(username): #get registereduser
         fetch_query = """SELECT * from registeredusers where username = ?"""
         cursor.execute(fetch_query, (username,))
         record = cursor.fetchall()
+
+        for row in record:
+            username = row[0]
+            password = row[1]
+            first_name = row[2]
+            last_name = row[3]
+            address = row[4]
         cursor.close()
   
     except sqlite3.Error as error:
-        print(error)
+        print("whoopsies fetch")
     finally:
         if connection:
             connection.close()
-    return record
 
-def add_to_cart(username, cart_number, item):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        insert_query = """INSERT INTO cart
-                        (username, cart_number, item) VALUES (?,?,?)"""
-        data = (username, cart_number, item)
-        cursor.execute(insert_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def remove_from_cart(username):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-        delete_query = """DELETE FROM cart WHERE username = ?"""
-        data = (username,)
-        cursor.execute(delete_query, data)
-        connection.commit()
-        cursor.close()
-    except sqlite3.Error as error:
-        print(error) #prompt user to pick different username
-    finally:
-        if connection:
-            connection.close()
-    return
-
-def get_cart(username):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT * from cart where username = ?"""
-        cursor.execute(fetch_query, (username,))
-        record = cursor.fetchall()
-        cursor.close()
-  
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-
-def get_contents_of_cart(cart_number):
-    try:
-        connection = sqlite3.connect('lib/grocery.sqlite3')
-        cursor = connection.cursor()
-                
-        fetch_query = """SELECT item from cart where cart_number = ?"""
-        cursor.execute(fetch_query, (cart_number,))
-        record = cursor.fetchall()
-        cursor.close()
-  
-    except sqlite3.Error as error:
-        print(error)
-    finally:
-        if connection:
-            connection.close()
-    return record
-
-
-def login_user(username, password): #verify login information
+def login_user(username, password):
     connection = sqlite3.connect('lib/grocery.sqlite3')
     cursor = connection.cursor()
     data = (username, password)
@@ -708,6 +305,39 @@ def login_user(username, password): #verify login information
     else:
         cursor.close()
         return False, None
+    
+def add_farm(farm_name, location):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO farm 
+                        (farm_name, location) VALUES (?, ?)"""
+        data = (farm_name, location)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Farm already exists") #prompt user to pick different farm name
+    finally:
+        if connection:
+            connection.close()
+
+def add_product(product_name, stock, price):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO product 
+                        (product_name, stock, price) VALUES (?, ?, ?)"""
+        data = (product_name, stock, price)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+        print(f"added product {product_name}, amount: {stock}, price: {price}")
+    except sqlite3.Error as error:
+        print("Product already exists") #prompt user to pick different farm name
+    finally:
+        if connection:
+            connection.close()
 
 def increase_stock(product_name, amount):
     try:
@@ -730,3 +360,144 @@ def increase_stock(product_name, amount):
         print(f"updated {product_name} stock to {currStock}")
     except sqlite3.Error as error:
         print(error)
+
+
+def remove_product(product_name):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        delete_query = """DELETE FROM product WHERE product_name = ?"""
+        data = (product_name,)
+        cursor.execute(delete_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error) #prompt user to pick different username
+    finally:
+        if connection:
+            connection.close()
+
+def add_sellsto(farm_name, supplier):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO sellsto 
+                        (farm_name, supplier) VALUES (?, ?)"""
+        data = (farm_name, supplier)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Sells-to relationship already exists") #prompt user to pick different farm name
+    finally:
+        if connection:
+            connection.close()
+
+def add_employee(employee_id, first_name, last_name, employer):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO employees 
+                        (employee_id, first_name, last_name, employer) VALUES (?, ?, ?, ?)"""
+        data = (employee_id, first_name, last_name, employer)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print("Sells-to relationship already exists") #prompt user to pick different farm name
+    finally:
+        if connection:
+            connection.close()
+
+def add_supplier(supplier_name, product):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO suppliers 
+                        (supplier_name, product) VALUES (?, ?)"""
+        data = (supplier_name, product)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error) #prompt user to pick different farm name
+    finally:
+        if connection:
+            connection.close()
+            
+def create_order_id():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()  
+        while(1):
+            random_number = random.randint(0, 2147483647)
+            fetch_query = """SELECT * from orders where order_id = ?"""
+            cursor.execute(fetch_query, (random_number,))
+            record = cursor.fetchall()
+            if(record == [] or record is None):
+                return random_number
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        if connection:
+            connection.close()
+    
+def checkout(username, address, total):
+    try:
+        order_id = create_order_id()
+        print(order_id)
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        insert_query = """INSERT INTO orders 
+                        (order_id, username, shipping_address) VALUES (?, ?, ?)"""
+        data = (order_id, username, address)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        date = datetime.datetime.now()
+        insert_query = """INSERT INTO receipt 
+                        (order_id, total, date, shipping_address) VALUES (?, ?, ?, ?)"""
+        data = (order_id, total, date, address)
+        cursor.execute(insert_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        if connection:
+            connection.close()
+    
+def remove_order(order_id):
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        delete_query = """DELETE FROM orders WHERE order_id = ?"""
+        data = (order_id,)
+        cursor.execute(delete_query, data)
+        connection.commit()
+        delete_query = """DELETE FROM receipt WHERE order_id = ?"""
+        data = (order_id,)
+        cursor.execute(delete_query, data)
+        connection.commit()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error) #prompt user to pick different username
+    finally:
+        if connection:
+            connection.close()
+    
+
+#remove_order(1380278447)
+#checkout("test", "123 test st", 12.39)
+#test inserts/fetches
+#add_item(1,"Bread", "images/bread.png", "Food", 12, 2.97)
+#get_item(1)
+#get_user("john")
+#remove_registereduser("jon")
+#add_product("banana", 15)
+#remove_product("banana")
+#add_registereduser("j", "pass1", "john", "123 john st")
+
+#remove_registereduser("john")
+#add_registereduser("johnny", "pass2", "john", "doe", "123 john st")
+
+#add_farm("Jimbob", "Calgary")
