@@ -6,7 +6,6 @@ from datetime import datetime
 from cart import Cart
 from db import login_user
 from db import add_registereduser
-from db import checkout
 from admin_config import isUserAdmin
 
 cart = Cart()
@@ -30,9 +29,8 @@ def login():
     print(userlogin)
     if userlogin[0] == True:
         #save the userdata into userlogin list.
-        global userLoggedIn
-        global admin
         userLoggedIn = userlogin[1]
+        global admin
         admin = isUserAdmin(username)
         if admin == True:
             return render_template("admin_home.html", ADMIN_MSG = "Logged in as admin.")
@@ -99,6 +97,7 @@ def go_back():
 @app.route('/confirm', methods=['GET', 'POST'], endpoint='confirm')
 def confirm_purchase():
     if request.method == 'POST':
+        cart.shoppingCart
     #check the stock of the items in the receipt in the database.
     #if not enough stock, error message and return to home.
 
@@ -108,21 +107,15 @@ def confirm_purchase():
 #
 @app.route('/checkoutInfo', methods=['GET', 'POST'], endpoint='checkoutInfo')
 def confirm_purchase():
-    global cart
     if request.method == 'POST':
         buttonRequest = request.form['submitType']
         if buttonRequest == "Submit":
             shipping_address = request.form['address']
             credit_card = request.form['creditCard']
-            print(userLoggedIn)
-            checkout(userLoggedIn[0][0], shipping_address, Cart.getCartTotal(cart.shoppingCart))
-            if admin == True:
-                cart = Cart() #resets the cart for next order.
-                return render_template("admin_home.html", SHOPPINGCART_ITEMS="Successfully placed order.")
-            cart = Cart()
-            return render_template("home.html", SHOPPINGCART_ITEMS="Successfully placed order.")
+            return render_template("checkout.html")
         else: #if cancel pressed.
-            return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
+            return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart)[0]
+                                   , TOTAL_PRICE=Cart.decorateCart(cart.shoppingCart)[1])
 
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')

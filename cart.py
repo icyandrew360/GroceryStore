@@ -32,15 +32,3 @@ class Cart:
         return_html += str(round(finalTotalPrice, 2))
         return(return_html.split('\n'))
 
-    def getCartTotal(cart):
-        finalTotalPrice = 0
-        for keys, value in cart.items():
-            if value > 0:
-                itemPrice = getItemPrice(keys)
-                totalPrice = round(itemPrice * value, 2)
-                finalTotalPrice += totalPrice
-        
-        return(round(finalTotalPrice, 2))
-
-
-
