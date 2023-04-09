@@ -133,8 +133,8 @@ def add_item(item_id, item_name, item_img, category, stock, price):
         cursor = connection.cursor() #create new cursor
         insert_query = """ INSERT INTO groceries
                         (item_id, item_name, item_img, category, stock, price) VALUES (?,?,?,?,?,?)""" #insert query
-        image = cvt_image(item_img) #get image bytes from filepath
-        data = (item_id, item_name, image, category, stock, price) #insert data into query
+        #image = cvt_image(item_img) #get image bytes from filepath
+        data = (item_id, item_name, item_img, category, stock, price) #insert data into query
         cursor.execute(insert_query, data) #execute query
         connection.commit() #commit changes to database
         cursor.close() #close cursor

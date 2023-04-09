@@ -57,7 +57,16 @@ def register():
         return render_template("login.html", REGISTER_MSG = 'Error creating account.')
    # if re.fullmatch(regex, email):
        
-    
+@app.route('/logout', methods=['GET', 'POST'], endpoint='logout')
+def logout():
+    global cart
+    global userLoggedIn
+    if request.method == 'POST':
+        cart.shoppingCart = {}#clears cart
+        userLoggedIn = []#clears userdata on logout.
+        return render_template("login.html", LOGIN_ERROR_MSG = "User logged out.")
+
+
 #adds or removes desired item while on home screen
 @app.route('/add_item', methods=['GET', 'POST'], endpoint='add_item')
 def add_item():
@@ -85,6 +94,16 @@ def add_item():
 def check_cart():
     if request.method == 'POST':
         return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
+    
+@app.route('/clear_cart', methods=['GET','POST'], endpoint="clear_cart")
+def clear_cart():
+    global cart
+    global admin
+    cart.shoppingCart = {}
+    if admin == True:
+        return render_template('admin_home.html', SHOPPINGCART_ITEMS=f"Cleared shopping cart.")
+    else:
+        return render_template('home.html', SHOPPINGCART_ITEMS="Cleared shopping cart.")
 
 #a back button that returns to the home page.
 @app.route('/back', methods=['GET', 'POST'], endpoint='back')

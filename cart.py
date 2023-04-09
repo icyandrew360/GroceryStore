@@ -29,6 +29,6 @@ class Cart:
                 return_html += f"{keys}: {value} = ${totalPrice}\n"
                 finalTotalPrice += totalPrice
             
-        return_html += str(round(finalTotalPrice, 2))
+        return_html += "$" + str(round(finalTotalPrice, 2))
         return(return_html.split('\n'))
 
