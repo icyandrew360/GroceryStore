@@ -7,12 +7,18 @@
     <body>
         <div class="navBar">
             <h1>GroceryStore</h1>
-
-            <form action="/logout" method="POST">
-                <button type="submit" name="logout" value="logout">
-                    Logout
-                </button>
-            </form>
+            <div class="navBarButtons">
+                <form action="/orders" methods="POST">
+                    <button type="submit" name="orders" value="orders">
+                        Order History
+                    </button>
+                </form>
+                <form action="/logout" method="POST">
+                    <button type="submit" name="logout" value="logout">
+                        Logout
+                    </button>
+                </form>
+            </div>
 
         </div>
         <div class="GroceryItems">

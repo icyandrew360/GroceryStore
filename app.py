@@ -130,6 +130,7 @@ def confirm_purchase():
 @app.route('/checkoutInfo', methods=['GET', 'POST'], endpoint='checkoutInfo')
 def confirm_purchase():
     global userLoggedIn
+    global admin
     if request.method == 'POST':
         buttonRequest = request.form['submitType']
         if buttonRequest == "Submit":
@@ -139,7 +140,10 @@ def confirm_purchase():
             username = userLoggedIn[0][0]
             print(userLoggedIn[0][0])
             db.checkout(username, shipping_address, total)
-            return render_template("checkout.html")
+            if admin == True:        
+                return render_template("admin_home.html", SHOPPINGCART_MSG = "Successfully placed order.")
+            else:
+                return render_template("home.html", SHOPPINGCART_MSG = "Successfully placed order.")
         else: #if cancel pressed.
             return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
 
@@ -159,6 +163,10 @@ def confirm_purchase():
             return render_template("admin_home.html", SHOPPINGCART_ITEMS = "Added farm.")
         else: #if cancel pressed.
             return render_template("admin_home.html")
+        
+@app.route('/orders', methods=['GET', 'POST'], endpoint='orders')
+def orders():
+    return render_template("orders.html")
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
 # def add_member():
