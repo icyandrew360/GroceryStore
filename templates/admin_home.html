@@ -14,9 +14,8 @@
             </form>
             
         </div>
-        <div class="adminMessage">
-            <p>Logged in as admin.</p>
-        <div>
+        <div class="adminMessage"><p>Logged in as admin.</p><div>
+
         <div class="GroceryItems">
             <form action="/add_item" method="POST">
                 <button type="submit" name="itemtype" value="Apple">
@@ -79,16 +78,22 @@
                 </button>
             </form>
             
-            </div>
-                <form action="/check_cart" method="POST">
-                    <button type="submit" name="cart" value="check">
-                        Retrieve cart
-                    </button>
-                </form>
-                <!-- <p>hello testing <br> does this work? </p> -->
-                <p>{{SHOPPINGCART_ITEMS}}</p>
-            <div>
-
+                
+        </div>
+        <div class="homeCartButton">
+            <p>{{SHOPPINGCART_ITEMS}}</p>
+            <form action="/check_cart" method="POST">
+                <button type="submit" name="cart" value="check">
+                    Retrieve cart
+                </button>
+            </form>
+    <!-- <p>hello testing <br> does this work? </p> -->
+        </div>
+        <div class="adminCommands">
+            <h2>Administrator commands</h2>
+            <p>add farm</p>
+            <p>edit inventory</p>
+            <p>manage users</p>
         </div>
     </body>
 </html> 

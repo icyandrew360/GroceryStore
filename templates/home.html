@@ -77,17 +77,19 @@
                 </button>
             </form>
 
-
-            </div>
-                <form action="/check_cart" method="POST">
-                    <button type="submit" name="cart" value="check">
-                        Retrieve cart
-                    </button>
-                </form>
-                <!-- <p>hello testing <br> does this work? </p> -->
-                <p>{{SHOPPINGCART_ITEMS}}</p>
-            <div>
-
+        </div>
+        <div class="homeCartButton">
+            <p>{{SHOPPINGCART_ITEMS}}</p>
+            <form action="/check_cart" method="POST">
+                <button type="submit" name="cart" value="check">
+                    Retrieve cart
+                </button>
+            </form>
+        </div>
+        <div class="adminCommands">
+            <h2>Welcome to GroceryStore!</h2>
+            <p>Please click on an item to add it to the cart.</p>
+            <p>Use the remove button to decrease item quantity.</p>
         </div>
     </body>
 </html> 

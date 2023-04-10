@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Cart</title>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/cart.css') }}">
     </head>
     <body>
         <div class="navBar">
@@ -14,35 +14,32 @@
                 </button>
             </form>
         </div>
-        <div class="Cart">
-            {% for line in SHOPPINGCART_ITEMS %}
+        <div class="cartReceipt">
+            <div class="receiptHeader">
+                <h2>Checkout</h2>
+            </div>
+
+            <div class="receiptBody">
+                {% for line in SHOPPINGCART_ITEMS %}
                 <p>{{line}}</p>
-            {% endfor %}
+                {% endfor %}
 
-            <p>{{TOTAL_PRICE}}</p>
-            <!-- <form action="/stats" method="POST">
-                <input class="button" type="submit" value="Stats">
-            </form> -->
-
-            <!-- <form action="/add_member" method="POST">
-                <input class="formInput" type = "text" name = "player_id" placeholder = "Player ID" required>
-                <input class="buttonsmall" type="submit" value="Add">
-            </form> -->
+                <p>{{TOTAL_PRICE}}</p>
+            </div>
+  
+            <div class="buttons">
                 <form action="/confirm" method="POST">
                     <button type="submit" name="confirm" value="confirm">
-                        confirm purchase
+                        Proceed to checkout
                     </button>
                 </form>
             
-                
                 <form action="/back" method="POST">
                     <button type="submit" name="back" value="back">
-                        back
+                        Back
                     </button>
                 </form>
-                <!-- <p>hello testing <br> does this work? </p> -->
-            <div>
-
+            </div>
         </div>
     </body>
 </html> 

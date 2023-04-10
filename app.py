@@ -133,8 +133,7 @@ def confirm_purchase():
             credit_card = request.form['creditCard']
             return render_template("checkout.html")
         else: #if cancel pressed.
-            return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart)[0]
-                                   , TOTAL_PRICE=Cart.decorateCart(cart.shoppingCart)[1])
+            return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
 
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
