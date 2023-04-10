@@ -97,18 +97,26 @@
         </div>
         <div class="adminCommands">
             <h2>Administrator commands</h2>
-            <form action="/add_remove_farm" method="POST">
-                <button type="submit" name="cart" value="check">
-                    Add/remove farm
-                </button>
-            </form>
             <form action="/edit_inventory" method="POST">
                 <button type="submit" name="cart" value="check">
                     Edit inventory/stock
                 </button>
             </form>
-            <p>edit inventory</p>
-            <p>manage users</p>
+            <form action="/add_remove_farm" method="POST">
+                <button type="submit" name="cart" value="check">
+                    Add/remove farm
+                </button>
+            </form>
+            <form action="/add_remove_supplier" method="POST">
+                <button type="submit" name="cart" value="check">
+                    Add/remove supplier
+                </button>
+            </form>
+            <form action="/edit_admins" method="POST">
+                <button type="submit" name="cart" value="check">
+                    Edit admins
+                </button>
+            </form>
         </div>
     </body>
 </html> 

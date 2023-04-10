@@ -119,11 +119,14 @@ def go_back():
 @app.route('/confirm', methods=['GET', 'POST'], endpoint='confirm')
 def confirm_purchase():
     if request.method == 'POST':
-        cart.shoppingCart
+        for item, amount in cart.shoppingCart.items():
+            if amount > db.get_product(item)[0][1]:#if amount requested of item is greater than current stock
+                return render_template("cart.html", ERROR_MSG = f'Error: not enough {item} stock for this request.')
     #check the stock of the items in the receipt in the database.
     #if not enough stock, error message and return to home.
 
     #if stock is enough, proceed to next page with delivery info.
+        
         return render_template("checkout.html")
     
 #
@@ -140,6 +143,9 @@ def confirm_purchase():
             username = userLoggedIn[0][0]
             print(userLoggedIn[0][0])
             db.checkout(username, shipping_address, total)
+            for item, amount in cart.shoppingCart.items():
+                db.increase_stock(item, -amount)#decrease stock by requested amount
+            cart.shoppingCart = {}
             if admin == True:        
                 return render_template("admin_home.html", SHOPPINGCART_MSG = "Successfully placed order.")
             else:
@@ -186,7 +192,7 @@ def orders():
 @app.route('/edit_inventory',  methods=['GET', 'POST'], endpoint='edit_inventory')
 def edit_inventory():
     if request.method == 'POST':
-        return render_template("edit_inventory.html")
+        return render_template("edit_inventory.html", INVENTORY_ITEMS = db.get_inventory_stock())
     
 @app.route('/edit_inventory_action',  methods=['GET', 'POST'], endpoint='edit_inventory_action')
 def edit_inventory():
@@ -196,38 +202,11 @@ def edit_inventory():
         if buttonRequest == "Submit":
             item_name = request.form['item_name']
             amount_added = int(request.form['amount_added'])
-            db.increase_stock(item_name,amount_added)
-            msg = f'Edited {item_name} stock by {amount_added}.'
+            if db.get_product(item_name) == []:
+                msg = 'Error: item does not exist.'
+            else:
+                db.increase_stock(item_name,amount_added)
+                msg = f'Edited {item_name} stock by {amount_added}.'
 
         return render_template("admin_home.html", SHOPPINGCART_ITEMS = msg)
 
-# @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
-# def add_member():
-#     if request.method == 'POST':
-#         player_ucid = request.form['player_id']
-#         success, msg = add_team_member(player_ucid, CurrentUser[0][0])
-#         if success:
-#             print("PLAYER UCID: ", player_ucid)
-#             return render_template("editTeams.html", ADD_MEMBER_MSG=msg)
-#         else:
-#             return render_template("editTeams.html", ADD_MEMBER_MSG=msg)
-#     else:
-#         return render_template("home.html")
-
-
-
-
-
-
-# @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
-# def add_member():
-#     if request.method == 'POST':
-#         player_ucid = request.form['player_id']
-#         success, msg = add_team_member(player_ucid, CurrentUser[0][0])
-#         if success:
-#             print("PLAYER UCID: ", player_ucid)
-#             return render_template("editTeams.html", ADD_MEMBER_MSG=msg)
-#         else:
-#             return render_template("editTeams.html", ADD_MEMBER_MSG=msg)
-#     else:
-#         return render_template("home.html")

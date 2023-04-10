@@ -725,3 +725,14 @@ def increase_stock(product_name, amount):
         print(f"updated {product_name} stock to {currStock}")
     except sqlite3.Error as error:
         print(error) #error occurred when attempting to increase stock
+
+def get_inventory_stock():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        query = " SELECT product_name, stock FROM product"
+        cursor.execute(query)
+        data = cursor.fetchall()
+        return (data)
+    except sqlite3.Error as error:
+        print(error)
