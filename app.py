@@ -238,7 +238,61 @@ def confirm_purchase():
         else: #if cancel pressed.
             return render_template("admin_home.html")
         
-@app.route('/edit_admins', methods=['GET', 'POST'], endpoint='edit_admin')
-def admin():
+@app.route('/edit_admins', methods=['GET', 'POST'], endpoint='edit_admins')
+def add_remove_admin():
     if request.method == 'POST':
-        return render_template("edit_admins.html", ADMINS=db.get_all_admins())
+        return render_template("edit_admins.html", ADMINS=db.get_all_admins(), USERS=db.get_all_registered_users())
+    
+@app.route('/add_admin', methods=['GET', 'POST'], endpoint='add_admin')
+def add_admin():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            admin_name = request.form['admin_name']
+            db.add_admin(admin_name)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Added admin {admin_name}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
+
+
+@app.route('/remove_admin', methods=['GET', 'POST'], endpoint='remove_admin')
+def add_admin():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            admin_name = request.form['admin_name']
+            db.remove_admin(admin_name)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Removed admin {admin_name}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
+
+@app.route('/manage_employees', methods=['GET', 'POST'], endpoint='manage_employees')
+def manage_employees():
+    if request.method == 'POST':
+        return render_template("manage_employees.html", EMPLOYEES = db.get_all_employees())
+    
+@app.route('/add_employee', methods=['GET', 'POST'], endpoint='add_employee')
+def add_admin():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            employee_id = request.form['employee_id']
+            first_name = request.form['first_name']
+            last_name = request.form['last_name']
+            employer = request.form['employer']
+            db.add_employee(employee_id, first_name, last_name, employer)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Added employee {first_name} {last_name}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
+        
+@app.route('/remove_employee', methods=['GET', 'POST'], endpoint='remove_employee')
+def add_admin():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            employee_id = request.form['employee_id']
+
+            db.remove_employee(employee_id)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Removed employee {employee_id}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")

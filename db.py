@@ -326,6 +326,22 @@ def get_employee(employee_id):
             connection.close() #close connection to sql database
     return record
 
+def get_all_employees():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3') #connect to sql database
+        cursor = connection.cursor() #create new cursor
+                
+        fetch_query = """SELECT * from employees""" #query to get order from database
+        cursor.execute(fetch_query)
+        record = cursor.fetchall() #get results from query
+        cursor.close() #close cursor
+  
+    except sqlite3.Error as error:
+        print(error) #error occurred when attempting to get orders
+    finally:
+        if connection:
+            connection.close() #close connection to sql database
+    return record
 
 def add_supplier(supplier_name, product): #add to suppliers table
     try:
@@ -603,6 +619,37 @@ def remove_admin(admin_user):
             connection.close() #close connection to sql database
     return
 
+def get_all_admins():
+    try:
+        connection =  sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+
+        query = 'SELECT * FROM admin'
+        cursor.execute(query)
+
+        record = cursor.fetchall() 
+    except sqlite3.Error as error:
+        print(error) #error occurred when attempting to add admin
+    finally:
+        if connection:
+            connection.close() #close connection to sql database
+    return record
+
+def get_all_registered_users():
+    try:
+        connection =  sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+
+        query = 'SELECT username FROM registeredusers'
+        cursor.execute(query)
+
+        record = cursor.fetchall() 
+    except sqlite3.Error as error:
+        print(error) #error occurred when attempting to add admin
+    finally:
+        if connection:
+            connection.close() #close connection to sql database
+    return record
 
 def add_registereduser(username, password, first_name, last_name, address): #add registered user
     connection = None

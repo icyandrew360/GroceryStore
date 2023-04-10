@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>manage employees</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+    </head>
+    <body>
+        <div class="navBar">
+            <h1>GroceryStore</h1>
+            <form action="/logout" method="POST">
+                <button type="submit" name="logout" value="logout">
+                    Logout
+                </button>
+            </form>
+        </div>
+        <div class="employeeFormAdd">
+            <h2>Add employee:</h2>
+            <form action="/add_employee" method="POST">
+                <label for="employee_id">Employee ID:</label><br>
+                <input type="text" id="employee_id" name="employee_id"><br>
+                <label for="first_name">First Name:</label><br>
+                <input type="text" id="first_name" name="first_name"><br>
+                <label for="last_name">Last name:</label><br>
+                <input type="text" id="last_name" name="last_name"><br>
+                <label for="employer">Employer name:</label><br>
+                <input type="text" id="employer" name="employer"><br>
+                <br>
+                <input type="submit" name="submitType" value="Submit">
+                <input type="submit" name="submitType" value="Cancel">
+            </form>
+        </div>
+        <div class="employeeFormRemove">
+            <h2>Remove existing employee:</h2>
+            <form action="/remove_employee" method="POST">
+                <label for="employee_id">Employee ID:</label><br>
+                <input type="text" id="employee_id" name="employee_id"><br>
+                <br>
+                <input type="submit" name="submitType" value="Submit">
+            </form>
+        </div>     
+
+        <div class="employees">
+            <h2>Existing employees:</h2>
+            {% for line in EMPLOYEES%}
+            <p>{{line}}</p>
+            {% endfor %}
+        </div>
+    </body>
+</html> 
