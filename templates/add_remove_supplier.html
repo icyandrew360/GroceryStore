@@ -13,32 +13,32 @@
                 </button>
             </form>
         </div>
-        <div class="farmFormAdd">
-            <h2>Add farm:</h2>
-            <form action="/add_farm_action" method="POST">
-                <label for="farm_name">Name of farm:</label><br>
-                <input type="text" id="farm_name" name="farm_name"><br>
-                <label for="location">Location:</label><br>
-                <input type="text" id="location" name="location"><br>
+        <div class="supplierFormAdd">
+            <h2>Add supplier:</h2>
+            <form action="/add_supplier_action" method="POST">
+                <label for="supplier_name">Name of supplier:</label><br>
+                <input type="text" id="supplier_name" name="supplier_name"><br>
+                <label for="product">Product:</label><br>
+                <input type="text" id="product" name="product"><br>
                 <br>
                 <input type="submit" name="submitType" value="Submit">
                 <input type="submit" name="submitType" value="Cancel">
             </form>
         </div>
-        <div class="farmFormRemove">
-            <h2>Remove existing farm:</h2>
-            <form action="/remove_farm_action" method="POST">
-                <label for="farm_name">Name of farm:</label><br>
-                <input type="text" id="farm_name" name="farm_name"><br>
+        <div class="supplierFormRemove">
+            <h2>Remove existing supplier:</h2>
+            <form action="/remove_supplier_action" method="POST">
+                <label for="supplier_name">Name of supplier:</label><br>
+                <input type="text" id="supplier_name" name="supplier_name"><br>
                 <br>
                 <input type="submit" name="submitType" value="Submit">
                 <input type="submit" name="submitType" value="Cancel">
             </form>
         </div>     
 
-        <div class="farms">
-            <h2>Existing farms:</h2>
-            {% for line in FARMS%}
+        <div class="suppliers">
+            <h2>Existing suppliers:</h2>
+            {% for line in SUPPLIERS%}
             <p>{{line}}</p>
             {% endfor %}
         </div>

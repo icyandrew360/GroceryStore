@@ -342,7 +342,7 @@ def add_supplier(supplier_name, product): #add to suppliers table
     finally:
         if connection:
             connection.close() #close connection to sql database
-            
+        
 def remove_supplier(supplier_name):
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3') #connect to sql database
@@ -374,6 +374,25 @@ def get_supplier(supplier_name):
         if connection:
             connection.close() #close connection to sql database
     return record
+
+
+def get_all_suppliers():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3') #connect to sql database
+        cursor = connection.cursor() #create new cursor
+                
+        fetch_query = """SELECT * from suppliers""" #query to get order from database
+        cursor.execute(fetch_query)
+        record = cursor.fetchall() #get results from query
+        cursor.close() #close cursor
+  
+    except sqlite3.Error as error:
+        print(error) #error occurred when attempting to get orders
+    finally:
+        if connection:
+            connection.close() #close connection to sql database
+    return record
+
 
 def add_supplies(supplier, grocery_item):
     try:
@@ -450,6 +469,23 @@ def get_farm(farm_name):
         cursor.close() #close cursor
     except sqlite3.Error as error:
         print(error) #error occurred when attempting to get farm
+    finally:
+        if connection:
+            connection.close() #close connection to sql database
+    return record
+
+def get_all_farms():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3') #connect to sql database
+        cursor = connection.cursor() #create new cursor
+                
+        fetch_query = """SELECT * from farm""" #query to get order from database
+        cursor.execute(fetch_query)
+        record = cursor.fetchall() #get results from query
+        cursor.close() #close cursor
+  
+    except sqlite3.Error as error:
+        print(error) #error occurred when attempting to get orders
     finally:
         if connection:
             connection.close() #close connection to sql database
