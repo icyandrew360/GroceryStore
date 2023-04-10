@@ -147,10 +147,10 @@ def confirm_purchase():
         else: #if cancel pressed.
             return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
 
-@app.route('/add_farm', methods=['GET', 'POST'], endpoint='add_farm')
+@app.route('/add_remove_farm', methods=['GET', 'POST'], endpoint='add_remove_farm')
 def confirm_purchase():
     if request.method == 'POST':
-        return render_template("add_farm.html")
+        return render_template("add_remove_farm.html")
 
 @app.route('/add_farm_action', methods=['GET', 'POST'], endpoint='add_farm_action')
 def confirm_purchase():
@@ -160,7 +160,18 @@ def confirm_purchase():
             farm_name = request.form['farm_name']
             location = request.form['location']
             db.add_farm(farm_name, location)
-            return render_template("admin_home.html", SHOPPINGCART_ITEMS = "Added farm.")
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Added farm {farm_name}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
+
+@app.route('/remove_farm_action', methods=['GET', 'POST'], endpoint='remove_farm_action')
+def confirm_purchase():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            farm_name = request.form['farm_name']
+            db.remove_farm(farm_name)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Removed farm {farm_name}.")
         else: #if cancel pressed.
             return render_template("admin_home.html")
         
@@ -171,6 +182,24 @@ def orders():
     print(order_history)
 
     return render_template("orders.html", ORDER_HISTORY = order_history)
+
+@app.route('/edit_inventory',  methods=['GET', 'POST'], endpoint='edit_inventory')
+def edit_inventory():
+    if request.method == 'POST':
+        return render_template("edit_inventory.html")
+    
+@app.route('/edit_inventory_action',  methods=['GET', 'POST'], endpoint='edit_inventory_action')
+def edit_inventory():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        msg = ''
+        if buttonRequest == "Submit":
+            item_name = request.form['item_name']
+            amount_added = int(request.form['amount_added'])
+            db.increase_stock(item_name,amount_added)
+            msg = f'Edited {item_name} stock by {amount_added}.'
+
+        return render_template("admin_home.html", SHOPPINGCART_ITEMS = msg)
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
 # def add_member():

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>add farm</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+    </head>
+    <body>
+        <div class="navBar">
+            <h1>GroceryStore</h1>
+            <form action="/logout" method="POST">
+                <button type="submit" name="logout" value="logout">
+                    Logout
+                </button>
+            </form>
+        </div>
+        <div class="formEditInventory">
+            <h2>Edit inventory:</h2>
+            <form action="/edit_inventory_action" method="POST">
+                <label for="item_name">Name of item:</label><br>
+                <input type="text" id="item_name" name="item_name"><br>
+                <label for="amount_added">Amount to add/remove:</label><br>
+                <input type="text" id="amount_added" name="amount_added"><br>
+                <br>
+                <input type="submit" name="submitType" value="Submit">
+                <input type="submit" name="submitType" value="Cancel">
+            </form>
+        </div>
+    </body>
+</html> 

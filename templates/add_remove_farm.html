@@ -13,7 +13,8 @@
                 </button>
             </form>
         </div>
-        <div class="farmForm">
+        <div class="farmFormAdd">
+            <h2>Add farm:</h2>
             <form action="/add_farm_action" method="POST">
                 <label for="farm_name">Name of farm:</label><br>
                 <input type="text" id="farm_name" name="farm_name"><br>
@@ -24,5 +25,15 @@
                 <input type="submit" name="submitType" value="Cancel">
             </form>
         </div>
+        <div class="farmFormRemove">
+            <h2>Remove existing farm:</h2>
+            <form action="/remove_farm_action" method="POST">
+                <label for="farm_name">Name of farm:</label><br>
+                <input type="text" id="farm_name" name="farm_name"><br>
+                <br>
+                <input type="submit" name="submitType" value="Submit">
+                <input type="submit" name="submitType" value="Cancel">
+            </form>
+        </div>     
     </body>
 </html> 
