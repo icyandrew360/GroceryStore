@@ -6,6 +6,8 @@ from datetime import datetime
 from cart import Cart
 from db import login_user
 from db import add_registereduser
+
+import db
 from admin_config import isUserAdmin
 
 cart = Cart()
@@ -22,6 +24,7 @@ def home():
 
 @app.route("/login", methods=['GET', 'POST'], endpoint='login')
 def login():
+    global userLoggedIn
     username = request.form['Username']
     password = request.form['Password']
     print(username, password)
@@ -126,15 +129,36 @@ def confirm_purchase():
 #
 @app.route('/checkoutInfo', methods=['GET', 'POST'], endpoint='checkoutInfo')
 def confirm_purchase():
+    global userLoggedIn
     if request.method == 'POST':
         buttonRequest = request.form['submitType']
         if buttonRequest == "Submit":
             shipping_address = request.form['address']
             credit_card = request.form['creditCard']
+            total = round(Cart.getTotal(cart.shoppingCart), 2)
+            username = userLoggedIn[0][0]
+            print(userLoggedIn[0][0])
+            db.checkout(username, shipping_address, total)
             return render_template("checkout.html")
         else: #if cancel pressed.
             return render_template("cart.html", SHOPPINGCART_ITEMS=Cart.decorateCart(cart.shoppingCart))
 
+@app.route('/add_farm', methods=['GET', 'POST'], endpoint='add_farm')
+def confirm_purchase():
+    if request.method == 'POST':
+        return render_template("add_farm.html")
+
+@app.route('/add_farm_action', methods=['GET', 'POST'], endpoint='add_farm_action')
+def confirm_purchase():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            farm_name = request.form['farm_name']
+            location = request.form['location']
+            db.add_farm(farm_name, location)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = "Added farm.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
 # def add_member():
