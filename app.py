@@ -156,7 +156,7 @@ def confirm_purchase():
 @app.route('/add_remove_farm', methods=['GET', 'POST'], endpoint='add_remove_farm')
 def confirm_purchase():
     if request.method == 'POST':
-        return render_template("add_remove_farm.html")
+        return render_template("add_remove_farm.html", FARMS=db.get_all_farms())
 
 @app.route('/add_farm_action', methods=['GET', 'POST'], endpoint='add_farm_action')
 def confirm_purchase():
@@ -210,3 +210,35 @@ def edit_inventory():
 
         return render_template("admin_home.html", SHOPPINGCART_ITEMS = msg)
 
+@app.route('/add_remove_supplier', methods=['GET', 'POST'], endpoint='add_remove_supplier')
+def add_remove_supplier():
+    if request.method == 'POST':
+        return render_template("add_remove_supplier.html", SUPPLIERS=db.get_all_suppliers())
+    
+@app.route('/add_supplier_action', methods=['GET', 'POST'], endpoint='add_supplier_action')
+def add_supplier():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            supplier_name = request.form['supplier_name']
+            product = request.form['product']
+            db.add_supplier(supplier_name, product)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Added supplier {supplier_name}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
+
+@app.route('/remove_supplier_action', methods=['GET', 'POST'], endpoint='remove_supplier_action')
+def confirm_purchase():
+    if request.method == 'POST':
+        buttonRequest = request.form['submitType']
+        if buttonRequest == "Submit":
+            supplier_name = request.form['supplier_name']
+            db.remove_supplier(supplier_name)
+            return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Removed supplier {supplier_name}.")
+        else: #if cancel pressed.
+            return render_template("admin_home.html")
+        
+@app.route('/edit_admins', methods=['GET', 'POST'], endpoint='edit_admin')
+def admin():
+    if request.method == 'POST':
+        return render_template("edit_admins.html", ADMINS=db.get_all_admins())
