@@ -20,11 +20,9 @@
             </div>
 
             <div class="ordersBody">
-                {% for line in SHOPPINGCART_ITEMS %}
+                {% for line in ORDER_HISTORY%}
                 <p>{{line}}</p>
                 {% endfor %}
-
-                <p>{{TOTAL_PRICE}}</p>
             </div>
   
             <div class="buttons">        

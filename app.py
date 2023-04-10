@@ -166,7 +166,11 @@ def confirm_purchase():
         
 @app.route('/orders', methods=['GET', 'POST'], endpoint='orders')
 def orders():
-    return render_template("orders.html")
+    user = userLoggedIn[0][0]
+    order_history = db.get_orders(user)
+    print(order_history)
+
+    return render_template("orders.html", ORDER_HISTORY = order_history)
 
 # @app.route('/add_member', methods=['GET', 'POST'], endpoint='add_member')
 # def add_member():
