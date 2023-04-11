@@ -13,15 +13,8 @@
                 </button>
             </form>
         </div>
-        <div class="currentInventory">
-            <h2>Current Inventory:</h2>
-            {% for line in INVENTORY_ITEMS%}
-            <p>{{line}}</p>
-            {% endfor %}
-        </div>
-        
-        <div class="formEditInventory">
-            
+
+        <div class="Form">       
             <h2>Edit inventory:</h2>
             <form action="/edit_inventory_action" method="POST">
                 <label for="item_name">Name of item:</label><br>
@@ -33,5 +26,13 @@
                 <input type="submit" name="submitType" value="Cancel">
             </form>
         </div>
+        <div class="CurrentData">
+            <h2>Current Inventory:</h2>
+            {% for line in INVENTORY_ITEMS%}
+            <p>{{line}}</p>
+            {% endfor %}
+        </div>
+        
+        
     </body>
 </html> 

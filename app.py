@@ -156,7 +156,7 @@ def confirm_purchase():
 @app.route('/add_remove_farm', methods=['GET', 'POST'], endpoint='add_remove_farm')
 def confirm_purchase():
     if request.method == 'POST':
-        return render_template("add_remove_farm.html", FARMS=db.get_all_farms())
+        return render_template("add_remove_farm.html", FARMS=db.get_all_farms(), SUPPLIERS=db.get_all_suppliers())
 
 @app.route('/add_farm_action', methods=['GET', 'POST'], endpoint='add_farm_action')
 def confirm_purchase():
@@ -165,7 +165,9 @@ def confirm_purchase():
         if buttonRequest == "Submit":
             farm_name = request.form['farm_name']
             location = request.form['location']
+            supplier = request.form['supplier']
             db.add_farm(farm_name, location)
+            db.add_sellsto(farm_name, supplier)
             return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Added farm {farm_name}.")
         else: #if cancel pressed.
             return render_template("admin_home.html")
@@ -177,6 +179,7 @@ def confirm_purchase():
         if buttonRequest == "Submit":
             farm_name = request.form['farm_name']
             db.remove_farm(farm_name)
+            db.remove_sellsto(farm_name)
             return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Removed farm {farm_name}.")
         else: #if cancel pressed.
             return render_template("admin_home.html")
@@ -213,7 +216,7 @@ def edit_inventory():
 @app.route('/add_remove_supplier', methods=['GET', 'POST'], endpoint='add_remove_supplier')
 def add_remove_supplier():
     if request.method == 'POST':
-        return render_template("add_remove_supplier.html", SUPPLIERS=db.get_all_suppliers())
+        return render_template("add_remove_supplier.html", SUPPLIERS=db.get_all_suppliers(), ITEMS=db.get_all_items())
     
 @app.route('/add_supplier_action', methods=['GET', 'POST'], endpoint='add_supplier_action')
 def add_supplier():
@@ -222,7 +225,9 @@ def add_supplier():
         if buttonRequest == "Submit":
             supplier_name = request.form['supplier_name']
             product = request.form['product']
+            product_id = request.form['product_id']
             db.add_supplier(supplier_name, product)
+            db.add_supplies(supplier_name, product_id)
             return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Added supplier {supplier_name}.")
         else: #if cancel pressed.
             return render_template("admin_home.html")
@@ -234,6 +239,7 @@ def confirm_purchase():
         if buttonRequest == "Submit":
             supplier_name = request.form['supplier_name']
             db.remove_supplier(supplier_name)
+            db.remove_supplies(supplier_name)
             return render_template("admin_home.html", SHOPPINGCART_ITEMS = f"Removed supplier {supplier_name}.")
         else: #if cancel pressed.
             return render_template("admin_home.html")

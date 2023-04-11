@@ -133,7 +133,7 @@ def add_item(item_id, item_name, item_img, category, stock, price):
         cursor = connection.cursor() #create new cursor
         insert_query = """ INSERT INTO groceries
                         (item_id, item_name, item_img, category, stock, price) VALUES (?,?,?,?,?,?)""" #insert query
-        #image = cvt_image(item_img) #get image bytes from filepath
+        image = cvt_image(item_img) #get image bytes from filepath
         data = (item_id, item_name, item_img, category, stock, price) #insert data into query
         cursor.execute(insert_query, data) #execute query
         connection.commit() #commit changes to database
@@ -144,6 +144,21 @@ def add_item(item_id, item_name, item_img, category, stock, price):
         if connection:
             connection.close() #close connection to sql database 
     return
+
+def get_all_items():
+    try:
+        connection = sqlite3.connect('lib/grocery.sqlite3')
+        cursor = connection.cursor()
+        query = 'SELECT item_id, item_name FROM groceries'
+        cursor.execute(query)
+        record = cursor.fetchall()
+        cursor.close()
+    except sqlite3.Error as error:
+        print(error)
+    finally:
+        if connection:
+            connection.close()
+        return record
 
 #get item from grocery table
 def get_item(item_id):
@@ -426,12 +441,12 @@ def add_supplies(supplier, grocery_item):
         if connection:
             connection.close() #close connection to sql database
 
-def remove_supplies(supplier, grocery_item):
+def remove_supplies(supplier):
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3') #connect to sql database
         cursor = connection.cursor() #create new cursor
-        delete_query = """DELETE FROM supplies WHERE supplier = ? AND grocery_item = ?""" #query to delete supplies from database
-        data = (supplier, grocery_item)
+        delete_query = """DELETE FROM supplies WHERE supplier = ?""" #query to delete supplies from database
+        data = (supplier)
         cursor.execute(delete_query, data)
         connection.commit() #commit changes to database
         cursor.close() #close cursor
@@ -522,12 +537,12 @@ def add_sellsto(farm_name, supplier): #add to sellsto table
         if connection:
             connection.close() #close connection to sql database
             
-def remove_sellsto(farm_name, supplier):
+def remove_sellsto(farm_name):
     try:
         connection = sqlite3.connect('lib/grocery.sqlite3') #connect to sql database
         cursor = connection.cursor() #create new cursor
-        delete_query = """DELETE FROM sellsto WHERE farm_name = ? AND supplier = ?""" #query to remove sellsto from database
-        data = (farm_name, supplier)
+        delete_query = """DELETE FROM sellsto WHERE farm_name = ?""" #query to remove sellsto from database
+        data = (farm_name)
         cursor.execute(delete_query, data)
         connection.commit() #commit changes to database
         cursor.close() #close cursor

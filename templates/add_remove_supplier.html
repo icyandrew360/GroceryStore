@@ -20,6 +20,8 @@
                 <input type="text" id="supplier_name" name="supplier_name"><br>
                 <label for="product">Product:</label><br>
                 <input type="text" id="product" name="product"><br>
+                <label for="product_id">Product id:</label><br>
+                <input type="text" id="product_id" name="product_id"><br>
                 <br>
                 <input type="submit" name="submitType" value="Submit">
                 <input type="submit" name="submitType" value="Cancel">
@@ -38,6 +40,12 @@
         <div class="suppliers">
             <h2>Existing suppliers:</h2>
             {% for line in SUPPLIERS%}
+            <p>{{line}}</p>
+            {% endfor %}
+        </div>
+        <div class="items">
+            <h2>Items and IDs:</h2>
+            {% for line in ITEMS%}
             <p>{{line}}</p>
             {% endfor %}
         </div>
