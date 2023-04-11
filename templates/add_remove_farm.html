@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>add farm</title>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/farm.css') }}">
     </head>
     <body>
         <div class="navBar">
@@ -13,41 +13,43 @@
                 </button>
             </form>
         </div>
-        <div class="farmFormAdd">
-            <h2>Add farm:</h2>
-            <form action="/add_farm_action" method="POST">
-                <label for="farm_name">Name of farm:</label><br>
-                <input type="text" id="farm_name" name="farm_name"><br>
-                <label for="location">Location:</label><br>
-                <input type="text" id="location" name="location"><br>
-                <label for="supplier">Sells to supplier:</label><br>
-                <input type="text" id="supplier" name="supplier"><br>
-                <br>
-                <input type="submit" name="submitType" value="Submit">
-                <input type="submit" name="submitType" value="Cancel">
-            </form>
-        </div>
-        <div class="farmFormRemove">
-            <h2>Remove existing farm:</h2>
-            <form action="/remove_farm_action" method="POST">
-                <label for="farm_name">Name of farm:</label><br>
-                <input type="text" id="farm_name" name="farm_name"><br>
-                <br>
-                <input type="submit" name="submitType" value="Submit">
-            </form>
-        </div>     
-
-        <div class="farms">
-            <h2>Existing farms:</h2>
-            {% for line in FARMS%}
-            <p>{{line}}</p>
-            {% endfor %}
-        </div>
-        <div class="suppliers">
-            <h2>Existing suppliers:</h2>
-            {% for line in SUPPLIERS%}
-            <p>{{line}}</p>
-            {% endfor %}
-        </div>
+        <div class="wrapper">
+            <div class="farmFormAdd">
+                <h2>Add farm:</h2>
+                <form action="/add_farm_action" method="POST">
+                    <label for="farm_name">Name of farm:</label><br>
+                    <input type="text" id="farm_name" name="farm_name"><br>
+                    <label for="location">Location:</label><br>
+                    <input type="text" id="location" name="location"><br>
+                    <label for="supplier">Sells to supplier:</label><br>
+                    <input type="text" id="supplier" name="supplier"><br>
+                    <br>
+                    <input type="submit" name="submitType" value="Submit">
+                    <input type="submit" name="submitType" value="Cancel">
+                </form>
+            </div>
+            <div class="farmFormRemove">
+                <h2>Remove existing farm:</h2>
+                <form action="/remove_farm_action" method="POST">
+                    <label for="farm_name">Name of farm:</label><br>
+                    <input type="text" id="farm_name" name="farm_name"><br>
+                    <br>
+                    <input type="submit" name="submitType" value="Submit">
+                </form>
+            </div>     
+    
+            <div class="farms">
+                <h2>Existing farms:</h2>
+                {% for line in FARMS%}
+                <p>{{line}}</p>
+                {% endfor %}
+            </div>
+            <div class="suppliers">
+                <h2>Existing suppliers:</h2>
+                {% for line in SUPPLIERS%}
+                <p>{{line}}</p>
+                {% endfor %}
+            </div>
+        </div>   
     </body>
 </html> 

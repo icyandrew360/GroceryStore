@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>add farm</title>
-        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/index.css') }}">
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/inventory.css') }}">
     </head>
     <body>
         <div class="navBar">
@@ -14,25 +14,25 @@
             </form>
         </div>
 
-        <div class="Form">       
-            <h2>Edit inventory:</h2>
-            <form action="/edit_inventory_action" method="POST">
-                <label for="item_name">Name of item:</label><br>
-                <input type="text" id="item_name" name="item_name"><br>
-                <label for="amount_added">Amount to add/remove:</label><br>
-                <input type="text" id="amount_added" name="amount_added"><br>
-                <br>
-                <input type="submit" name="submitType" value="Submit">
-                <input type="submit" name="submitType" value="Cancel">
-            </form>
-        </div>
-        <div class="CurrentData">
-            <h2>Current Inventory:</h2>
-            {% for line in INVENTORY_ITEMS%}
-            <p>{{line}}</p>
-            {% endfor %}
-        </div>
-        
-        
+        <div class="wrapper">
+            <div class="Form">       
+                <h2>Edit inventory:</h2>
+                <form action="/edit_inventory_action" method="POST">
+                    <label for="item_name">Name of item:</label><br>
+                    <input type="text" id="item_name" name="item_name"><br>
+                    <label for="amount_added">Amount to add/remove:</label><br>
+                    <input type="text" id="amount_added" name="amount_added"><br>
+                    <br>
+                    <input class="button" type="submit" name="submitType" value="Submit">
+                    <input class="button" type="submit" name="submitType" value="Cancel">
+                </form>
+            </div>
+            <div class="CurrentData">
+                <h2>Current Inventory:</h2>
+                {% for line in INVENTORY_ITEMS%}
+                <p>{{line}}</p>
+                {% endfor %}
+            </div>
+        </div>  
     </body>
 </html> 
